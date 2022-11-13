@@ -7,8 +7,32 @@ import pandas as pd
 import torch
 import torchaudio
 from IPython.display import Audio, display
+import librosa
+from random import randint
+import librosa.display
 
-
+#Get a random video clip from dataset
+def get_random_sample(dataset):
+    """
+    Takes a random sample in the dataset and return its waveform and sample rate
+    """
+    dataset_length = dataset.__len__()
+    # get a random sample in the dataset
+    sample_id = randint(0, dataset_length)
+    (waveform, sample_rate, transcript, speaker_id, chapter_id, utterance_id) = dataset.__getitem__(sample_id)
+    
+    return waveform, sample_rate
+    
+def plot_mfccs(waveform, sample_rate):
+    wv_processed = waveform.numpy().flatten()
+    mfccs = librosa.feature.mfcc(y=wv_processed, n_mfcc=13, sr=sample_rate)
+    plt.figure(figsize=(15, 8))
+    librosa.display.specshow(mfccs, x_axis="time", sr=sample_rate)
+    #plt.colorbar(format="%+2.f")
+    plt.show()
+    
+    
+    
 def play_audio(waveform : torch.Tensor, sample_rate : int) -> None:
     """
     Plays audio given a waveform and sample rate
