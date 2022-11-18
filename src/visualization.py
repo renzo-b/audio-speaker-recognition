@@ -1,15 +1,15 @@
 import os
 from random import randint
 
+import librosa
+import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
 import torchaudio
 from IPython.display import Audio, display
-import librosa
-from random import randint
-import librosa.display
+
 
 #Get a random video clip from dataset
 def get_random_sample(dataset):
