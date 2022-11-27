@@ -1,5 +1,6 @@
 import os
 
+import pandas as pd
 import torch
 import torchaudio
 
@@ -11,7 +12,7 @@ def get_dataset(dataset_name : str, url: str | None = None, subset : str | None 
     Inputs
     ------
     dataset_name : str
-        Name of the dataset to download. Allowed dataset names: "librispeech", "librilightlimited", "tedlium"
+        Name of the dataset to download. Allowed dataset names: "librispeech", "voxceleb1identification"
     
     url : (str, optional)
         Optional argument for some datasets 
@@ -35,18 +36,62 @@ def get_dataset(dataset_name : str, url: str | None = None, subset : str | None 
         print(f"You're about to download librispeech with url {url}")
         dataset = torchaudio.datasets.LIBRISPEECH(dataset_path, download=True, url=url)
     
-    elif dataset_name == "librilightlimited":
-        subset = subset if subset else "10min"
-        print(f"You're about to download librispeech with subset {subset}")
-        dataset = torchaudio.datasets.LibriLightLimited(dataset_path, download=True, subset=subset)
-        
-    elif dataset_name == "tedlium":
+    elif dataset_name == "voxceleb1identification":
         subset = subset if subset else "train"
-        print(f"You're about to download Tedlium with subset {subset}")
-        dataset = torchaudio.datasets.TEDLIUM(dataset_path, download=True, subset=subset)
-    
+        print(f"You're about to download VoxCeleb with subset {subset}")
+        dataset = torchaudio.datasets.VoxCeleb1Identification(dataset_path, download=True, subset=subset)
+
     else:
         raise ValueError(f"The dataset you passed '{dataset_name}' is not in the list of datasets")
     
     print("\n Done downloading")
     return dataset 
+
+
+def read_pickled_dataset(dataset_name : str):
+    """
+    Inputs
+    ------
+    dataset_name : str
+        Name of the dataset to download. 
+    
+    Returns
+    -------
+    speaker_mfcc_db : pd.DataFrame 
+        df with shape (index_id, speaker_id, mfcc_id)
+    
+    mfcc_channel_db : pd.DataFrame
+        df with shape (mfcc_id, channel_id)
+
+    """
+    if dataset_name == "librispeech-train-clean-100":
+        speaker_mfcc_db = pd.read_pickle('speaker_mfcc_db_64000_16000_13_100.pkl')
+        mfcc_channel_db = pd.read_pickle('mfcc_channel_db_64000_16000_13_100.pkl')
+    
+    elif dataset_name == "librispeech-train-other-500":
+        speaker_mfcc_db = pd.read_pickle(f'speaker_mfcc_db_64000_16000_13_500.pkl')
+        mfcc_channel_db = pd.read_pickle(f'mfcc_channel_db_64000_16000_13_500.pkl')
+
+    elif dataset_name == "voxceleb1identification-4s":
+        speaker_mfcc_db = pd.read_pickle(f'speaker_mfcc_db_64000_16000_13_voxceleb_4s.pkl')
+        mfcc_channel_db = pd.read_pickle(f'mfcc_channel_db_64000_16000_13_voxceleb_4s.pkl')
+
+    elif dataset_name == "librispeech-mixed":
+        speaker_mfcc_db_500 = pd.read_pickle(f'speaker_mfcc_db_64000_16000_13_500.pkl')
+        mfcc_channel_db_500 = pd.read_pickle(f'mfcc_channel_db_64000_16000_13_500.pkl')
+
+        speaker_mfcc_db_100 = pd.read_pickle('speaker_mfcc_db_64000_16000_13_100.pkl')
+        mfcc_channel_db_100= pd.read_pickle('mfcc_channel_db_64000_16000_13_100.pkl')
+
+        mfcc_channel_db = pd.concat([mfcc_channel_db_500, mfcc_channel_db_100])
+        speaker_mfcc_db = pd.concat([speaker_mfcc_db_500, speaker_mfcc_db_100])
+   
+
+    else:
+        raise ValueError(f"The dataset you passed '{dataset_name}' is not in the list of datasets")
+
+    print(f"\n Loaded {dataset_name}")
+
+    return speaker_mfcc_db, mfcc_channel_db
+
+
