@@ -83,6 +83,9 @@ def read_pickled_dataset(dataset_name : str):
         speaker_mfcc_db_100 = pd.read_pickle('speaker_mfcc_db_64000_16000_13_100.pkl')
         mfcc_channel_db_100= pd.read_pickle('mfcc_channel_db_64000_16000_13_100.pkl')
 
+        speaker_mfcc_db_100["mfcc_id"] = speaker_mfcc_db_100["mfcc_id"] + 400000
+        mfcc_channel_db_100.index = mfcc_channel_db_100.index + 400000
+
         mfcc_channel_db = pd.concat([mfcc_channel_db_500, mfcc_channel_db_100])
         speaker_mfcc_db = pd.concat([speaker_mfcc_db_500, speaker_mfcc_db_100])
    
