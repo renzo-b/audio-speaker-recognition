@@ -81,8 +81,8 @@ def read_pickled_dataset(dataset_name : str):
         mfcc_channel_db = pd.read_pickle(f'mfcc_channel_db_voxceleb_with_sinisa.pkl')
 
     elif dataset_name == "celeb_demo":
-        speaker_mfcc_db = pd.read_pickle(f'speaker_mfcc_db_reduced.pkl')
-        mfcc_channel_db = pd.read_pickle(f'mfcc_channel_db_reduced.pkl')
+        speaker_mfcc_db = pd.read_pickle(f'speaker_mfcc_db_test_reduced.pkl')
+        mfcc_channel_db = pd.read_pickle(f'mfcc_channel_db_test_reduced.pkl')
     elif dataset_name == "librispeech-mixed":
         speaker_mfcc_db_500 = pd.read_pickle(f'speaker_mfcc_db_64000_16000_13_500.pkl')
         mfcc_channel_db_500 = pd.read_pickle(f'mfcc_channel_db_64000_16000_13_500.pkl')
